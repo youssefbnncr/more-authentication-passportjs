@@ -10,6 +10,29 @@ app.set('view engine','ejs');
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
+const session = require('express-session');
+const passport = require('./auth');
+
+app.use(session({
+    secret: process.env.SESSION_SECRET;
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.post('/login', passport.authenticate('local',{
+    successRedirect: '/dashboard',
+    failureRedirect: '/login',
+}))
+
+app.get('/dashboard', (req, res) => {
+    if (req.isAuthenticated()) {
+        res.send(`Welcome, ${req.user.username}`);
+    } else {
+        res.redirect('/login');
+    }
+});
 app.get('/',(req,res)=>{
     res.send('Hi from Home');
 })
