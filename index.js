@@ -14,10 +14,11 @@ const session = require('express-session');
 const passport = require('./auth');
 
 app.use(session({
-    secret: process.env.SESSION_SECRET;
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false
 }));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
